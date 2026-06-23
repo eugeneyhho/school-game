@@ -17,22 +17,31 @@ Files: [`src/composables/useChineseGame.js`](../src/composables/useChineseGame.j
 
 | Level | Choices | Word tier | Label |
 | --- | --- | --- | --- |
-| easy | 3 | everyday words (爸爸, 媽媽, 太陽, …) | "3 choices" |
-| medium | 4 | school/daily words (老師, 書包, 下雨, …) | "4 choices" |
-| hard | 4 | actions/abstract (跑步, 上下, 今天, …) | "4 choices · 進階" |
+| easy | 3 | most familiar (爸爸, 太陽, 蘋果, 小貓, 魚, …) | "3 choices" |
+| medium | 4 | school/daily + food + animals (老師, 麵包, 金魚, 大象, …) | "4 choices" |
+| hard | 4 | abstract + specific food/animals (跑步, 朱古力, 長頸鹿, 蜘蛛, …) | "4 choices · 進階" |
 
 Because every word is two characters, difficulty is driven by **word tier + choice count**
 rather than word length (the English game's knob).
 
-Round length is fixed at `ROUND_LENGTH = 8`.
+Round length is fixed at `ROUND_LENGTH = 6` (capped so the smallest tier — hard, 6
+words — always has enough distinct words for a no-repeat round).
 
 ## Vocabulary (`utils/chinese.js`)
 
-`CHINESE_VOCAB` is a curated list of `{ word, emoji, tier }` — 22 two-character 詞語 in
-Traditional Chinese, one unambiguous emoji each. Each word is tagged `easy` / `medium` /
-`hard`; the tier assignment is a familiarity suggestion and trivially adjustable (just move
-an entry's `tier`). There is **no pinyin/注音** field — the game is visual-only; add one
-later if you want phonetic hints in the reveal.
+`CHINESE_VOCAB` is a curated list of `{ word, emoji, tier }` — 81 詞語 in Traditional
+Chinese (everyday words + a large food set + a large animal set), one unambiguous emoji
+each. Each word is tagged `easy` / `medium` / `hard`; the tier assignment is a familiarity
+suggestion and trivially adjustable (just move an entry's `tier`). Word lengths vary
+(魚/雞/熊/蛇/鷹 are one character, 三文治/朱古力/長頸鹿 are three, most are two) — that's
+fine, since difficulty is driven by tier + choice count, not length. There is **no
+pinyin/注音** field — the game is visual-only (plus tap-to-hear pronunciation); add a
+phonetic field later if you want text hints in the reveal.
+
+> ⚠️ **Avoid duplicate emojis within a tier.** Distractors are drawn from the same tier as
+> the target, so two words sharing an emoji in one tier (e.g. 魚 and 金魚, both 🐟) would
+> be ambiguous. Such pairs are placed in *different* tiers (魚 easy, 金魚 medium) so they
+> can never appear in the same question.
 
 - `pickWords(difficulty, count)` filters `CHINESE_VOCAB` to the tier, Fisher–Yates shuffles,
   and slices `count`. Used once per round at `start()`.
@@ -85,8 +94,25 @@ screen.
 Praise text is in Traditional Chinese (`好棒!`, `厲害!`, …); a wrong answer shows
 `"Oops!"` plus `"The answer was <word>"` (no phonetic).
 
+## Pronunciation (tap to hear)
+
+The emoji picture is a button: tapping it speaks the target word aloud in Mandarin via
+[`src/utils/speech.js`](../src/utils/speech.js) (the browser's built-in
+`speechSynthesis` — no audio files, no new dependencies, same no-asset philosophy as
+[sound.js](sound.md)). A 🔊 badge in the corner signals it's tappable, and the hint reads
+"Tap 🔊 to hear the word!".
+
+- `speak(text)` prefers a **zh-TW** voice (matching the Traditional-Chinese content),
+  falling back to any `zh*` voice, then to the default voice with `lang='zh-TW'`. It plays
+  at rate `0.9` (slightly slow, for young learners) and cancels any in-flight speech so
+  rapid taps don't pile up. It's a silent no-op if the browser has no speech synthesis.
+- Voices load asynchronously; `speech.js` caches a Chinese voice and refreshes it on the
+  `voiceschanged` event.
+- Pronunciation is scoped to the Chinese game (the other subjects stay text/SFX only).
+  Add it elsewhere by importing `speak` and calling it from a tap handler.
+
 ## Results
 
 `ChineseResultScreen` is the math `ResultScreen` with `ROUND_LENGTH`-aware wording
-(`"You got N out of 8!"`) and a `"Change Level"` button. The rating tiers (90/70/50) and
+(`"You got N out of 6!"`) and a `"Change Level"` button. The rating tiers (90/70/50) and
 the `celebrate()` + `playWin()` trigger (accuracy ≥ 70%) are identical to the other games.

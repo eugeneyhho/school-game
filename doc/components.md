@@ -104,13 +104,14 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
   `useLiveTimer(game.startTime)`.
 - **Role:** the round host — topbar, mascot, the big **emoji picture** (`:key="word"`
   to retrigger its `pop` entrance), and the reused `AnswerButtons` for the 詞語 choices.
-  Owns the `onAnswer` grading-and-advance timing (mirrors `GameScreen`: 1100 ms correct /
-  1500 ms wrong). Praise text is in Traditional Chinese. See
-  [chinese-game.md](chinese-game.md).
+  The picture is a button: tapping it calls `speak(word)` to pronounce the word in Mandarin
+  (see [chinese-game.md](chinese-game.md)). Owns the `onAnswer` grading-and-advance timing
+  (mirrors `GameScreen`: 1100 ms correct / 1500 ms wrong). Praise text is in Traditional
+  Chinese.
 
 ### `ChineseResultScreen.vue`
 - **Emits:** `play-again`, `change-settings` ("Change Level"), `back`.
-- **Role:** twin of `ResultScreen` with `"You got N out of 8!"` wording.
+- **Role:** twin of `ResultScreen` with `"You got N out of 6!"` wording.
 
 ## Shared
 

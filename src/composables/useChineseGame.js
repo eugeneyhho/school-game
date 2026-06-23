@@ -1,8 +1,9 @@
 import { ref, reactive, computed } from 'vue'
 import { pickWords, buildChoices } from '../utils/chinese'
 
-// Number of words in a single round.
-export const ROUND_LENGTH = 8
+// Number of words in a single round. 6 keeps rounds short and K3-friendly; every tier
+// has well more than 6 words, so each round draws distinct words with plenty of variety.
+export const ROUND_LENGTH = 6
 
 // ---- Singleton Chinese-game state shared across screens --------------------
 const config = reactive({ difficulty: 'easy' })
