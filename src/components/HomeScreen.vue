@@ -1,7 +1,11 @@
 <script setup>
 import AppMascot from './AppMascot.vue'
+import { useSound } from '../composables/useSound'
+import { playTap } from '../utils/sound'
 
 const emit = defineEmits(['select'])
+
+const { muted, toggleMute } = useSound()
 
 const subjects = [
   {
@@ -29,9 +33,21 @@ const subjects = [
     pending: false,
   },
 ]
+
+function pick(key) {
+  playTap()
+  emit('select', key)
+}
 </script>
 
 <template>
+  <button
+    class="sound-btn"
+    :title="muted ? 'Unmute' : 'Mute'"
+    @click="toggleMute"
+  >
+    {{ muted ? '🔇' : '🔊' }}
+  </button>
   <div class="screen home">
     <AppMascot mood="wave" />
     <h1 class="title">Learning Games</h1>
@@ -44,7 +60,7 @@ const subjects = [
         class="card"
         :class="{ pending: s.pending }"
         :style="{ '--c': s.color }"
-        @click="emit('select', s.key)"
+        @click="pick(s.key)"
       >
         <span v-if="s.pending" class="badge">Coming Soon</span>
         <span class="card-emoji">{{ s.emoji }}</span>

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { playTap, playBackspace } from '../utils/sound'
 
 const props = defineProps({
   answer: Number,
@@ -25,9 +26,11 @@ function press(d) {
   if (props.reveal) return
   if (entry.value.length >= 3) return
   entry.value += d
+  playTap()
 }
 function clearEntry() {
   entry.value = ''
+  playBackspace()
 }
 function check() {
   if (entry.value === '' || props.reveal) return

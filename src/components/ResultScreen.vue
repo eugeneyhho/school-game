@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { game } from '../composables/useGame'
 import { celebrate } from '../utils/confetti'
+import { playWin } from '../utils/sound'
 import { formatDuration } from '../utils/format'
 
 const emit = defineEmits(['play-again', 'change-settings', 'back'])
@@ -20,7 +21,10 @@ const rating = computed(() => {
 })
 
 onMounted(() => {
-  if (accuracy.value >= 70) celebrate()
+  if (accuracy.value >= 70) {
+    celebrate()
+    playWin()
+  }
 })
 </script>
 

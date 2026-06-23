@@ -367,6 +367,24 @@ button:disabled {
   margin: 6px 0 16px;
 }
 
+.sound-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  border-radius: 14px;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(91, 71, 145, 0.2);
+}
+.sound-btn:hover {
+  background: #e9deff;
+}
 .timer {
   position: fixed;
   top: 16px;

@@ -17,6 +17,7 @@ lands in the right place and follows existing conventions.
 | [english-game.md](english-game.md) | English spelling round lifecycle, tile/slot model, vocabulary & levels |
 | [components.md](components.md) | Per-component reference: props, emits, responsibilities |
 | [styling.md](styling.md) | Design tokens, shared chrome classes, animations, mascot |
+| [sound.md](sound.md) | Web Audio SFX engine, the sound set, mute toggle, autoplay unlock |
 | [build-and-deploy.md](build-and-deploy.md) | Local dev, production build, GitHub Pages pipeline |
 
 ## Quick orientation
@@ -29,11 +30,13 @@ src/
 ├── composables/         # singleton game-state modules
 │   ├── useGame.js       #   math: state + start/submit/advance
 │   ├── useEnglishGame.js#   english: state + place/backspace/advance
-│   └── useLiveTimer.js  # 100ms-ticking reactive elapsed-ms helper
+│   ├── useLiveTimer.js  # 100ms-ticking reactive elapsed-ms helper
+│   └── useSound.js      # reactive mute toggle (wraps utils/sound.js)
 ├── utils/               # pure, framework-free helpers
 │   ├── math.js          #   generateProblem / buildChoices / shuffle
 │   ├── vocab.js         #   VOCAB / ENGLISH_LEVELS / pickWords / buildTiles
 │   ├── confetti.js      #   burst() / celebrate()
+│   ├── sound.js         #   Web Audio SFX engine: playTap/playCorrect/…
 │   └── format.js        #   formatDuration(ms)
 └── components/          # presentational Vue SFCs (see components.md)
 ```

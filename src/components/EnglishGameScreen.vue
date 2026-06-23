@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { englishGame as game } from '../composables/useEnglishGame'
 import { burst } from '../utils/confetti'
+import { playPlace, playBackspace, playCorrect, playWrong } from '../utils/sound'
 import { useLiveTimer } from '../composables/useLiveTimer'
 import { formatDuration } from '../utils/format'
 import AppMascot from './AppMascot.vue'
@@ -25,13 +26,20 @@ const placedLen = computed(() => placed.value.length)
 let timer = null
 function onPlace(id) {
   game.place(id)
+  playPlace()
   if (game.status.value === 'answered') scheduleAdvance()
 }
 function onBackspace() {
   game.backspace()
+  playBackspace()
 }
 function scheduleAdvance() {
-  if (game.lastCorrect.value) burst()
+  if (game.lastCorrect.value) {
+    burst()
+    playCorrect()
+  } else {
+    playWrong()
+  }
   const delay = game.lastCorrect.value ? 1100 : 1700
   clearTimeout(timer)
   timer = setTimeout(() => {

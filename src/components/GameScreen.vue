@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { game } from '../composables/useGame'
 import { burst } from '../utils/confetti'
+import { playCorrect, playWrong } from '../utils/sound'
 import { useLiveTimer } from '../composables/useLiveTimer'
 import { formatDuration } from '../utils/format'
 import QuestionCard from './QuestionCard.vue'
@@ -33,7 +34,12 @@ const feedbackMsg = computed(() => praise[current.value % praise.length])
 
 function onAnswer(value) {
   const ok = game.submit(value)
-  if (ok) burst()
+  if (ok) {
+    burst()
+    playCorrect()
+  } else {
+    playWrong()
+  }
   const delay = ok ? 1100 : 1500
   setTimeout(() => {
     game.advance()
