@@ -102,15 +102,25 @@ The emoji picture is a button: tapping it speaks the target word aloud in **Cant
 [sound.js](sound.md)). A 🔊 badge in the corner signals it's tappable, and the hint reads
 "Tap 🔊 to hear the word!".
 
-- `speak(text)` prefers a **zh-HK** (Hong Kong Cantonese) voice, falling back to any
-  `zh*` voice, then to the default voice with `lang='zh-HK'`. It plays at `volume = 1.0`
-  (the speechSynthesis ceiling) and `rate = 0.75` (slow, clear pacing for young learners),
-  and cancels any in-flight speech so rapid taps don't pile up. It's a silent no-op if the
-  browser has no speech synthesis.
-- Voices load asynchronously; `speech.js` caches a Chinese voice and refreshes it on the
+- `speak(text)` prefers a **Cantonese** voice — matching `zh-HK`, the `yue` macrolanguage,
+  or known names (e.g. Apple's *Sin-ji*) — assigning it explicitly so the engine uses it.
+  If none is installed it falls back to any `zh` voice (usually Mandarin), then to the
+  default voice with `lang='zh-HK'`. It plays at `volume = 1.0` (the speechSynthesis
+  ceiling) and `rate = 0.75` (slow, clear pacing for young learners), and cancels any
+  in-flight speech so rapid taps don't pile up. It's a silent no-op if the browser has no
+  speech synthesis. `hasCantoneseVoice()` reports whether a Cantonese voice is available.
+- Voices load asynchronously; `speech.js` caches a voice and refreshes it on the
   `voiceschanged` event.
 - Pronunciation is scoped to the Chinese game (the other subjects stay text/SFX only).
   Add it elsewhere by importing `speak` and calling it from a tap handler.
+
+> ⚠️ **Platform limitation.** `speechSynthesis` can only use voices **installed on the
+> device**. Many phones ship with a Mandarin (`zh-CN`) voice and *no* Cantonese voice — in
+> that case the same characters come out in Mandarin regardless of the code. To hear real
+> 廣東話 on a given device, install a Cantonese voice (iOS: *Settings → Accessibility →
+> Spoken Content → Voices → Chinese (Hong Kong)*; Android varies and often lacks one). The
+> only way to **guarantee** Cantonese on every device is to bundle recorded audio per word
+> instead of relying on the system TTS — a future option if system voices prove unreliable.
 
 ## Results
 
