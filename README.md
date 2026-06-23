@@ -1,18 +1,19 @@
-# Math Adventure 🦊
+# Learning Games 🦊
 
-A fancy, kid-friendly math game for kindergarteners to practice **addition** and
-**subtraction**. Built with **Vue 3 + Vite**.
+A fancy, kid-friendly learning app for kindergarteners, built with **Vue 3 + Vite**.
+Pick a subject from the home menu and play!
 
-## Features
+## Subjects
 
-- ➕ Add, ➖ Take Away, or 🎲 Surprise (mixed) modes
-- 🐣 Easy (1–5), 🐥 Medium (1–10), 🦅 Hard (1–20) levels
-- 🔘 Pick-the-answer buttons **or** ⌨️ on-screen number keypad (choose on the start screen)
-- 🍎 Visual counting aids — each number is shown as countable emoji
-- 🎉 Confetti + ⭐ star rewards on correct answers
-- 🔥 Streak tracking and a fun results screen
-- Subtraction never goes negative — perfect for little learners
-- Touch-friendly big buttons (great on tablets)
+- 🐼 **中文 Chinese** — *coming soon* (pending).
+- 🔤 **English** — a picture-to-word spelling game: look at the picture (emoji) and
+  tap the letter tiles to spell the word. Easy / Medium / Hard levels.
+- 🔢 **Math** — addition & subtraction with counting aids. Add / Take Away / Mixed,
+  Easy (1–5) / Medium (1–10) / Hard (1–20), and **Pick** (multiple-choice) or
+  **Type** (number keypad) answer modes.
+
+Every game has confetti + star rewards, streak tracking, and a fun results screen.
+All input is tap/click — friendly for tablets and pre-readers.
 
 ## Getting started
 
@@ -26,28 +27,47 @@ Then open the URL Vite prints (usually http://localhost:5173).
 ## Build for production
 
 ```bash
-npm run build
-npm run preview
+npm run build      # outputs to dist/
+npm run preview    # preview the production build locally
 ```
+
+## Deploy to GitHub Pages
+
+The included workflow (`.github/workflows/deploy.yml`) builds and publishes to
+GitHub Pages on every push to `master`.
+
+- Repo **Settings → Pages → Source** must be set to **"GitHub Actions"**.
+- `vite.config.js` sets `base: '/school-game/'` for the build so assets resolve
+  under the project URL: **https://eugeneyhho.github.io/school-game/**
+  (change it if you use a custom domain or a different repo name).
 
 ## Project structure
 
 ```
 src/
-├── main.js                  # app entry
-├── App.vue                  # screen state machine: start → game → results
-├── style.css                # global kid-friendly styles
+├── main.js                       # app entry
+├── App.vue                       # subject switcher (home → subject app)
+├── style.css                     # global kid-friendly styles + shared chrome
 ├── composables/
-│   └── useGame.js           # shared game state + round logic (singleton)
+│   ├── useGame.js                # math game state + round logic (singleton)
+│   └── useEnglishGame.js         # english spelling state + round logic (singleton)
 ├── utils/
-│   ├── math.js              # problem generation + multiple-choice distractors
-│   └── confetti.js          # celebration helpers (canvas-confetti)
+│   ├── math.js                   # math problem generation + distractors
+│   ├── vocab.js                  # english word list + tile builder
+│   └── confetti.js               # celebration helpers (canvas-confetti)
 └── components/
-    ├── StartScreen.vue      # pick operation, level, and answer mode
-    ├── GameScreen.vue       # round host: question, feedback, progress
-    ├── ResultScreen.vue     # stars, score, accuracy, play again
-    ├── QuestionCard.vue     # the equation with emoji counting aids
-    ├── AnswerButtons.vue    # multiple-choice input
-    ├── AnswerKeypad.vue     # number-pad input
-    └── AppMascot.vue        # the reactive 🦊 mascot
+    ├── HomeScreen.vue            # subject menu (Chinese / English / Math)
+    ├── PendingScreen.vue         # "coming soon" screen (Chinese)
+    ├── MathApp.vue               # math flow: start → game → results
+    ├── EnglishApp.vue            # english flow: start → game → results
+    ├── StartScreen.vue           # math settings
+    ├── GameScreen.vue            # math round host
+    ├── ResultScreen.vue          # math results
+    ├── QuestionCard.vue          # math equation + emoji aids
+    ├── AnswerButtons.vue         # multiple-choice input
+    ├── AnswerKeypad.vue          # number-pad input
+    ├── EnglishStartScreen.vue    # english level pick
+    ├── EnglishGameScreen.vue     # picture + letter-tile spelling
+    ├── EnglishResultScreen.vue   # english results
+    └── AppMascot.vue             # the reactive 🦊 mascot
 ```

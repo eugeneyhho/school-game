@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import AppMascot from './AppMascot.vue'
 
 const props = defineProps({ config: Object })
-const emit = defineEmits(['start'])
+const emit = defineEmits(['start', 'back'])
 
 const operation = ref(props.config?.operation || 'add')
 const difficulty = ref(props.config?.difficulty || 'medium')
@@ -35,6 +35,7 @@ function go() {
 
 <template>
   <div class="screen start">
+    <button class="back-btn" @click="emit('back')">← Menu</button>
     <AppMascot mood="wave" />
     <h1 class="title">Math Adventure</h1>
     <p class="subtitle">Let's play with numbers! 🎈</p>

@@ -1,38 +1,29 @@
 <script setup>
 import { ref } from 'vue'
-import StartScreen from './components/StartScreen.vue'
-import GameScreen from './components/GameScreen.vue'
-import ResultScreen from './components/ResultScreen.vue'
-import { game } from './composables/useGame'
+import HomeScreen from './components/HomeScreen.vue'
+import MathApp from './components/MathApp.vue'
+import EnglishApp from './components/EnglishApp.vue'
+import PendingScreen from './components/PendingScreen.vue'
 
-// Top-level state machine: 'start' -> 'game' -> 'results'
-const screen = ref('start')
+// Top-level subject switcher: null (home) | 'math' | 'english' | 'chinese'
+const subject = ref(null)
 
-function onStart(cfg) {
-  game.start(cfg)
-  screen.value = 'game'
+function selectSubject(key) {
+  subject.value = key
 }
-
-function onFinished() {
-  screen.value = 'results'
-}
-
-function playAgain() {
-  game.start(game.config)
-  screen.value = 'game'
-}
-
-function changeSettings() {
-  screen.value = 'start'
+function backToMenu() {
+  subject.value = null
 }
 </script>
 
 <template>
-  <StartScreen v-if="screen === 'start'" :config="game.config" @start="onStart" />
-  <GameScreen v-else-if="screen === 'game'" @finished="onFinished" />
-  <ResultScreen
-    v-else
-    @play-again="playAgain"
-    @change-settings="changeSettings"
+  <HomeScreen v-if="!subject" @select="selectSubject" />
+  <MathApp v-else-if="subject === 'math'" @back="backToMenu" />
+  <EnglishApp v-else-if="subject === 'english'" @back="backToMenu" />
+  <PendingScreen
+    v-else-if="subject === 'chinese'"
+    title="中文"
+    emoji="🐼"
+    @back="backToMenu"
   />
 </template>

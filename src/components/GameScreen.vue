@@ -7,7 +7,7 @@ import AnswerButtons from './AnswerButtons.vue'
 import AnswerKeypad from './AnswerKeypad.vue'
 import AppMascot from './AppMascot.vue'
 
-const emit = defineEmits(['finished'])
+const emit = defineEmits(['finished', 'back'])
 
 const {
   correctCount,
@@ -42,6 +42,7 @@ function onAnswer(value) {
 <template>
   <div class="game">
     <div class="topbar">
+      <button class="home-btn" title="Menu" @click="emit('back')">🏠</button>
       <div class="score">⭐ {{ correctCount }}</div>
       <div class="progress">
         <span
