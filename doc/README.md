@@ -61,6 +61,6 @@ src/
   unit-tested or reused without a component context.
 - **All input is tap/click.** The viewport disables pinch-zoom and text
   selection (`index.html`, `style.css`) for a tablet/pre-reader feel.
-- **One round, then results.** Both games follow `start → game → results`
+- **One round, then results.** Every game follows `start → game → results`
   with the same scoring/streak/accuracy/celebration shape — keep new games
   consistent with it.

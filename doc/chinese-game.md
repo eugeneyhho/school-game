@@ -53,7 +53,7 @@ phonetic field later if you want text hints in the reveal.
 
 ## Round model (`useChineseGame`)
 
-Same lifecycle and state shape as the other two games:
+Same lifecycle and state shape as the other games:
 
 ```
 word    : string    the target 詞語 for the current question
@@ -96,16 +96,17 @@ Praise text is in Traditional Chinese (`好棒!`, `厲害!`, …); a wrong answe
 
 ## Pronunciation (tap to hear)
 
-The emoji picture is a button: tapping it speaks the target word aloud in Mandarin via
-[`src/utils/speech.js`](../src/utils/speech.js) (the browser's built-in
+The emoji picture is a button: tapping it speaks the target word aloud in **Cantonese
+(廣東話)** via [`src/utils/speech.js`](../src/utils/speech.js) (the browser's built-in
 `speechSynthesis` — no audio files, no new dependencies, same no-asset philosophy as
 [sound.js](sound.md)). A 🔊 badge in the corner signals it's tappable, and the hint reads
 "Tap 🔊 to hear the word!".
 
-- `speak(text)` prefers a **zh-TW** voice (matching the Traditional-Chinese content),
-  falling back to any `zh*` voice, then to the default voice with `lang='zh-TW'`. It plays
-  at rate `0.9` (slightly slow, for young learners) and cancels any in-flight speech so
-  rapid taps don't pile up. It's a silent no-op if the browser has no speech synthesis.
+- `speak(text)` prefers a **zh-HK** (Hong Kong Cantonese) voice, falling back to any
+  `zh*` voice, then to the default voice with `lang='zh-HK'`. It plays at `volume = 1.0`
+  (the speechSynthesis ceiling) and `rate = 0.75` (slow, clear pacing for young learners),
+  and cancels any in-flight speech so rapid taps don't pile up. It's a silent no-op if the
+  browser has no speech synthesis.
 - Voices load asynchronously; `speech.js` caches a Chinese voice and refreshes it on the
   `voiceschanged` event.
 - Pronunciation is scoped to the Chinese game (the other subjects stay text/SFX only).

@@ -47,19 +47,22 @@ If you rename the repo, use a custom domain, or deploy elsewhere, change this
 
 Published URL (default config): **https://eugeneyhho.github.io/school-game/**
 
-## Adding a real subject (e.g. making Chinese playable)
+## Adding a subject
 
-The plumbing is intentionally uniform — follow the Math/English template:
+All three subjects (Math, English, Chinese) follow the same template, so a fourth is
+straightforward. The Chinese game (added most recently) is the freshest worked example —
+see [chinese-game.md](chinese-game.md).
 
-1. **Util** — `src/utils/<subject>.js` (pure data/generation, no Vue).
+1. **Util** — `src/utils/<subject>.js` (pure data/generation, no Vue): a vocab/problem set
+   and `pickWords`/`buildChoices`-style helpers.
 2. **Composable** — `src/composables/use<Subject>Game.js` exporting a singleton
-   `const <subject>Game = { … }` with `start`/`advance` and the shared
+   `const <subject>Game = { … }` with `start`/`submit`/`advance` and the shared
    `status` lifecycle (see [architecture.md](architecture.md)).
-3. **Components** — `<Subject>App.vue` (the `start→game→results` shell) plus
-   its `Start`/`Game`/`Result` screens. Reuse `AppMascot`, confetti, and the
-   shared chrome classes from `style.css`.
-4. **Wire it in `App.vue`** — replace the `PendingScreen` branch for
-   `'chinese'` with your new app.
-5. **Flip the card** in `HomeScreen.vue` — set `pending: false` and update the
-   `sub` label.
+3. **Components** — `<Subject>App.vue` (the `start→game→results` shell) plus its
+   `Start`/`Game`/`Result` screens. Reuse `AnswerButtons` (if multiple-choice),
+   `AppMascot`, confetti, the SFX layer ([sound.md](sound.md)), and the shared chrome
+   classes from `style.css`.
+4. **Wire it in `App.vue`** — add a `v-else-if` branch rendering the new app. (If you're
+   replacing a pending slot, swap the branch and set the HomeScreen card's `pending:false`.)
+5. **HomeScreen.vue** — add (or un-pend) the card: `emoji/title/sub/color/pending`.
 6. No build/deploy change needed — Vite picks up new files automatically.

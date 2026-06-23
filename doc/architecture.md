@@ -65,9 +65,9 @@ Consequences of module-scoped state:
 This is the lightweight alternative to Pinia: no provider, no injection, just
 ES-module singletons. Add a third subject by mirroring this structure.
 
-## Round lifecycle (shared by both games)
+## Round lifecycle (shared by all games)
 
-Both composables expose the same lifecycle shape, even though the inputs differ:
+The three composables expose the same lifecycle shape, even though the inputs differ:
 
 | Phase | `status` | What happens |
 | --- | --- | --- |

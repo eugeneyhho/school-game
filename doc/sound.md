@@ -41,7 +41,7 @@ gesture. Two things cover this:
 | `playTap()` | soft triangle blip ~520 Hz | home subject select, keypad digit press |
 | `playPlace()` | brighter pop ~660 Hz | placing an English letter tile |
 | `playBackspace()` | low descending 300→200 Hz | English backspace, keypad clear |
-| `playCorrect()` | rising major arpeggio C5–E5–G5–C6 | correct answer (both games) |
+| `playCorrect()` | rising major arpeggio C5–E5–G5–C6 | correct answer (all games) |
 | `playWrong()` | gentle descending two-tone sine | wrong answer (soft, not a harsh buzz) |
 | `playWin()` | fanfare arpeggio + sparkle | finishing a round ≥ 70% (with confetti) |
 
