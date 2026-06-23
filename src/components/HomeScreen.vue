@@ -12,9 +12,9 @@ const subjects = [
     key: 'chinese',
     emoji: '🐼',
     title: '中文',
-    sub: 'Chinese',
+    sub: '詞語 Words',
     color: '#ff922b',
-    pending: true,
+    pending: false,
   },
   {
     key: 'english',

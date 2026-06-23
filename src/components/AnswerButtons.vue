@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 
 const props = defineProps({
   choices: Array,
-  answer: Number,
+  answer: [Number, String],
   reveal: Boolean,
 })
 const emit = defineEmits(['answer'])

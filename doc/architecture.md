@@ -122,9 +122,10 @@ only for the lifetime of the game screen — leaving the screen stops it.
   (scoped) inside `GameScreen.vue`. The scoped copies win for that screen;
   `EnglishGameScreen.vue` relies on the global ones. If you restyle the
   topbar, update both to avoid drift.
-- **`pending` subjects are real routes.** `App.vue` routes `'chinese'` to
-  `PendingScreen` and `HomeScreen` marks the card `pending: true` + a
-  "Coming Soon" badge. To make Chinese playable, add a real component and
-  swap the `App.vue` branch (see [build-and-deploy.md](build-and-deploy.md)).
+- **All three subjects are playable.** `App.vue` routes `'math'`, `'english'`, and
+  `'chinese'` to their `*App.vue`; `HomeScreen` lists all three with `pending: false`.
+  `PendingScreen.vue` is kept on disk as a generic "coming soon" placeholder for any
+  future subject but is no longer wired in. To add a fourth subject, follow the template
+  in [build-and-deploy.md](build-and-deploy.md) (the Chinese game is a recent example).
 - **No tests.** There is no test runner configured; `utils/` being pure is
   what would make adding one straightforward.

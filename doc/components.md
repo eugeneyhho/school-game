@@ -9,26 +9,26 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
 ### `App.vue` (root, in `src/`)
 - **Role:** subject switcher. Holds `subject: ref(null|'math'|'english'|'chinese')`.
 - **Logic:** `selectSubject(key)` sets the ref; `backToMenu()` clears it.
-- **Renders:** `HomeScreen` (null), `MathApp`, `EnglishApp`, or `PendingScreen`.
+- **Renders:** `HomeScreen` (null), `MathApp`, `EnglishApp`, or `ChineseApp`.
 
 ### `HomeScreen.vue`
 - **Emits:** `select(key)`.
-- **Owns:** the `subjects` list — `chinese` (pending), `english`, `math` — each
-  with `emoji/title/sub/color/pending`. Renders one big `.card` per subject.
-- **Note:** pending cards are *still clickable*; clicking Chinese navigates to
-  `PendingScreen`. The card just shows a "Coming Soon" badge and dimmed style.
+- **Owns:** the `subjects` list — `chinese`, `english`, `math` — each
+  with `emoji/title/sub/color/pending` (all `pending: false` now). Renders one big `.card`
+  per subject.
 
 ### `PendingScreen.vue`
 - **Props:** `title` (default `'Coming Soon'`), `emoji` (default `✨`).
 - **Emits:** `back`.
-- **Role:** generic placeholder for unbuilt subjects. Currently wired to Chinese.
+- **Role:** generic "coming soon" placeholder. Kept on disk but **no longer wired in**
+  now that all three subjects are playable — available for a future fourth subject.
 
-### `MathApp.vue` / `EnglishApp.vue`
+### `MathApp.vue` / `EnglishApp.vue` / `ChineseApp.vue`
 - **Emits:** `back`.
 - **Role:** the `start → game → results` state machine for one subject. Holds
-  a local `screen` ref, calls `game.start` / `englishGame.start` on start, and
-  flips `screen='results'` on `@finished`. `playAgain` re-calls `start(config)`
-  with the *existing* config (keeps settings).
+  a local `screen` ref, calls `game.start` / `englishGame.start` /
+  `chineseGame.start` on start, and flips `screen='results'` on `@finished`.
+  `playAgain` re-calls `start(config)` with the *existing* config (keeps settings).
 
 ## Math screens
 
@@ -55,11 +55,11 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
   `(a*7+b*3)%12`, staggered pop-in per emoji. See [math-game.md](math-game.md).
 
 ### `AnswerButtons.vue`
-- **Props:** `choices: number[]`, `answer: number`, `reveal: boolean`.
+- **Props:** `choices: (number|string)[]`, `answer: [Number, String]`, `reveal: boolean`.
 - **Emits:** `answer(choice)`.
-- **Role:** 4-button multiple-choice grid. Local `selected` locks to first tap
-  and resets when `choices` change. Visual states: `chosen`/`correct`/`wrong`
-  (wrong also shakes).
+- **Role:** multiple-choice grid, **shared by the Math and Chinese games** (numbers for
+  math, 詞語 strings for Chinese). Local `selected` locks to first tap and resets when
+  `choices` change. Visual states: `chosen`/`correct`/`wrong` (wrong also shakes).
 
 ### `AnswerKeypad.vue`
 - **Props:** `answer: number`, `reveal: boolean`.
@@ -89,6 +89,28 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
 ### `EnglishResultScreen.vue`
 - **Emits:** `play-again`, `change-settings` ("Change Level"), `back`.
 - **Role:** twin of `ResultScreen` with spelling wording.
+
+## Chinese screens
+
+### `ChineseStartScreen.vue`
+- **Props:** `config`.
+- **Emits:** `start({ difficulty })`, `back`.
+- **Role:** single level picker (easy/medium/hard), labels pulled from
+  `CHINESE_LEVELS`. Twin of `EnglishStartScreen`.
+
+### `ChineseGameScreen.vue`
+- **Emits:** `finished`, `back`.
+- **Reads:** destructures the shared `chineseGame` object; builds `liveMs` via
+  `useLiveTimer(game.startTime)`.
+- **Role:** the round host — topbar, mascot, the big **emoji picture** (`:key="word"`
+  to retrigger its `pop` entrance), and the reused `AnswerButtons` for the 詞語 choices.
+  Owns the `onAnswer` grading-and-advance timing (mirrors `GameScreen`: 1100 ms correct /
+  1500 ms wrong). Praise text is in Traditional Chinese. See
+  [chinese-game.md](chinese-game.md).
+
+### `ChineseResultScreen.vue`
+- **Emits:** `play-again`, `change-settings` ("Change Level"), `back`.
+- **Role:** twin of `ResultScreen` with `"You got N out of 8!"` wording.
 
 ## Shared
 

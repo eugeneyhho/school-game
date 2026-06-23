@@ -1,8 +1,8 @@
 # School-Game — Implementation Docs
 
 Reference documentation for the **Learning Games** app (Vue 3 + Vite), a
-tap-friendly learning game for kindergarteners with **Math** and **English**
-subjects (Chinese is a pending placeholder).
+tap-friendly learning game for kindergarteners with **Math**, **English**, and
+**Chinese** subjects.
 
 These docs describe *how the code is built* — architecture, game logic,
 component contracts, the design system, and deployment — so a future change
@@ -15,6 +15,7 @@ lands in the right place and follows existing conventions.
 | [architecture.md](architecture.md) | App structure, the singleton-composable pattern, screen state machines, module map |
 | [math-game.md](math-game.md) | Math round lifecycle, problem & distractor generation, answer modes |
 | [english-game.md](english-game.md) | English spelling round lifecycle, tile/slot model, vocabulary & levels |
+| [chinese-game.md](chinese-game.md) | Chinese picture→詞語 round lifecycle, vocabulary & levels, Traditional Chinese |
 | [components.md](components.md) | Per-component reference: props, emits, responsibilities |
 | [styling.md](styling.md) | Design tokens, shared chrome classes, animations, mascot |
 | [sound.md](sound.md) | Web Audio SFX engine, the sound set, mute toggle, autoplay unlock |
@@ -30,11 +31,13 @@ src/
 ├── composables/         # singleton game-state modules
 │   ├── useGame.js       #   math: state + start/submit/advance
 │   ├── useEnglishGame.js#   english: state + place/backspace/advance
+│   ├── useChineseGame.js#   chinese: state + start/submit/advance
 │   ├── useLiveTimer.js  # 100ms-ticking reactive elapsed-ms helper
 │   └── useSound.js      # reactive mute toggle (wraps utils/sound.js)
 ├── utils/               # pure, framework-free helpers
 │   ├── math.js          #   generateProblem / buildChoices / shuffle
 │   ├── vocab.js         #   VOCAB / ENGLISH_LEVELS / pickWords / buildTiles
+│   ├── chinese.js       #   CHINESE_VOCAB / CHINESE_LEVELS / pickWords / buildChoices
 │   ├── confetti.js      #   burst() / celebrate()
 │   ├── sound.js         #   Web Audio SFX engine: playTap/playCorrect/…
 │   └── format.js        #   formatDuration(ms)
