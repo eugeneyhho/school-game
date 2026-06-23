@@ -20,6 +20,8 @@ const choices = ref([]) // shuffled multiple-choice options
 // status: 'idle' (not playing) | 'playing' (awaiting answer) | 'answered' (showing feedback)
 const status = ref('idle')
 const lastCorrect = ref(null) // was the most recent answer correct?
+const startTime = ref(0) // performance.now() when the round started
+const elapsedMs = ref(0) // total time taken once the round completes
 
 const accuracy = computed(() =>
   Math.round((correctCount.value / ROUND_LENGTH) * 100),
@@ -39,6 +41,8 @@ function start(cfg) {
   correctCount.value = 0
   streak.value = 0
   bestStreak.value = 0
+  startTime.value = performance.now()
+  elapsedMs.value = 0
   nextProblem()
 }
 
@@ -54,6 +58,9 @@ function submit(value) {
     bestStreak.value = Math.max(bestStreak.value, streak.value)
   } else {
     streak.value = 0
+  }
+  if (current.value === ROUND_LENGTH - 1) {
+    elapsedMs.value = performance.now() - startTime.value
   }
   return isCorrect
 }
@@ -79,6 +86,8 @@ export const game = {
   choices,
   status,
   lastCorrect,
+  startTime,
+  elapsedMs,
   accuracy,
   start,
   submit,

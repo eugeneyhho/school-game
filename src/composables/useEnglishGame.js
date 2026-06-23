@@ -15,6 +15,8 @@ const bestStreak = ref(0)
 // status: 'idle' | 'playing' | 'answered'
 const status = ref('idle')
 const lastCorrect = ref(null)
+const startTime = ref(0)
+const elapsedMs = ref(0)
 
 const word = ref('') // target word
 const emoji = ref('') // picture clue
@@ -47,6 +49,8 @@ function start(cfg) {
   correctCount.value = 0
   streak.value = 0
   bestStreak.value = 0
+  startTime.value = performance.now()
+  elapsedMs.value = 0
   roundWords.value = pickWords(config.difficulty, ROUND_LENGTH)
   loadWord(roundWords.value[0])
 }
@@ -75,6 +79,9 @@ function check() {
   } else {
     streak.value = 0
   }
+  if (current.value === ROUND_LENGTH - 1) {
+    elapsedMs.value = performance.now() - startTime.value
+  }
 }
 
 /** Move to the next word, or end the round. */
@@ -96,6 +103,8 @@ export const englishGame = {
   bestStreak,
   status,
   lastCorrect,
+  startTime,
+  elapsedMs,
   word,
   emoji,
   tiles,

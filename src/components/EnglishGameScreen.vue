@@ -2,6 +2,8 @@
 import { computed } from 'vue'
 import { englishGame as game } from '../composables/useEnglishGame'
 import { burst } from '../utils/confetti'
+import { useLiveTimer } from '../composables/useLiveTimer'
+import { formatDuration } from '../utils/format'
 import AppMascot from './AppMascot.vue'
 
 const emit = defineEmits(['finished', 'back'])
@@ -9,6 +11,7 @@ const emit = defineEmits(['finished', 'back'])
 const { correctCount, streak, current, status, lastCorrect, word, emoji, available, placed } =
   game
 const ROUND_LENGTH = game.ROUND_LENGTH
+const liveMs = useLiveTimer(game.startTime)
 
 const mascotMood = computed(() =>
   status.value === 'answered' ? (lastCorrect.value ? 'happy' : 'sad') : 'idle',
@@ -42,6 +45,7 @@ function scheduleAdvance() {
   <div class="game">
     <div class="topbar">
       <button class="home-btn" title="Menu" @click="emit('back')">🏠</button>
+      <div class="timer">⏱️ {{ formatDuration(liveMs) }}</div>
       <div class="score">⭐ {{ correctCount }}</div>
       <div class="progress">
         <span

@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { game } from '../composables/useGame'
 import { celebrate } from '../utils/confetti'
+import { formatDuration } from '../utils/format'
 
 const emit = defineEmits(['play-again', 'change-settings', 'back'])
 
@@ -39,6 +40,7 @@ onMounted(() => {
     <div class="msg">{{ rating.msg }}</div>
     <div class="score-line">You got {{ correct }} out of {{ total }}! 🎯</div>
     <div class="acc">{{ accuracy }}% correct</div>
+    <div class="time-line">⏱️ Your time: {{ formatDuration(game.elapsedMs.value) }}</div>
     <div class="streak-line">Best streak: 🔥 {{ bestStreak }}</div>
 
     <button class="btn-primary" @click="emit('play-again')">Play Again 🔄</button>

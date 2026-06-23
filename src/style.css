@@ -366,3 +366,16 @@ button:disabled {
   font-weight: 600;
   margin: 6px 0 16px;
 }
+
+.timer {
+  color: var(--blue);
+  font-size: clamp(15px, 4vw, 19px);
+  min-width: 52px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.time-line {
+  color: var(--blue);
+  font-weight: 600;
+  margin: 4px 0;
+}

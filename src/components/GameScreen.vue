@@ -2,6 +2,8 @@
 import { computed } from 'vue'
 import { game } from '../composables/useGame'
 import { burst } from '../utils/confetti'
+import { useLiveTimer } from '../composables/useLiveTimer'
+import { formatDuration } from '../utils/format'
 import QuestionCard from './QuestionCard.vue'
 import AnswerButtons from './AnswerButtons.vue'
 import AnswerKeypad from './AnswerKeypad.vue'
@@ -20,6 +22,7 @@ const {
   config,
 } = game
 const ROUND_LENGTH = game.ROUND_LENGTH
+const liveMs = useLiveTimer(game.startTime)
 
 const mascotMood = computed(() =>
   status.value === 'answered' ? (lastCorrect.value ? 'happy' : 'sad') : 'idle',
@@ -43,6 +46,7 @@ function onAnswer(value) {
   <div class="game">
     <div class="topbar">
       <button class="home-btn" title="Menu" @click="emit('back')">🏠</button>
+      <div class="timer">⏱️ {{ formatDuration(liveMs) }}</div>
       <div class="score">⭐ {{ correctCount }}</div>
       <div class="progress">
         <span
