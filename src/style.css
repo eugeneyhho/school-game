@@ -368,11 +368,18 @@ button:disabled {
 }
 
 .timer {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: var(--card);
   color: var(--blue);
   font-size: clamp(15px, 4vw, 19px);
-  min-width: 52px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  box-shadow: 0 4px 14px rgba(91, 71, 145, 0.2);
 }
 .time-line {
   color: var(--blue);
