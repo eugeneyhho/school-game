@@ -3,7 +3,7 @@ name: Deploy Vue.js Site to GitHub Pages
 on:
   push:
     branches:
-      - master # Change this to 'master' if your main branch is named master
+      - master
 
 permissions:
   contents: read
@@ -27,19 +27,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24 # Uses stable Node 20
-          cache: 'npm'
+          node-version: 24
 
       - name: Install Dependencies
-        run: npm ci
+        # npm install (not npm ci) so the build works even without a committed lockfile
+        run: npm install
 
       - name: Build Project
         run: npm run build
 
       - name: Upload Production Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: './dist' # Tells GitHub to upload your Vue build folder
+          path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
