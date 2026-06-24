@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { englishGame as game } from '../composables/useEnglishGame'
 import { burst } from '../utils/confetti'
 import { playPlace, playBackspace, playCorrect, playWrong } from '../utils/sound'
+import { speak } from '../utils/speech'
 import { useLiveTimer } from '../composables/useLiveTimer'
 import { formatDuration } from '../utils/format'
 import AppMascot from './AppMascot.vue'
@@ -22,6 +23,11 @@ const feedbackMsg = computed(() => praise[current.value % praise.length])
 
 const wordArray = computed(() => word.value.split(''))
 const placedLen = computed(() => placed.value.length)
+
+/** Speak the target word aloud (tap-to-hear pronunciation aid). */
+function speakWord() {
+  speak(word.value, 'en')
+}
 
 let timer = null
 function onPlace(id) {
@@ -68,8 +74,11 @@ function scheduleAdvance() {
 
     <AppMascot :mood="mascotMood" />
 
-    <div class="picture" :key="word">{{ emoji }}</div>
-    <div class="hint">Spell the word!</div>
+    <button class="picture-btn" type="button" title="Read to me" @click="speakWord">
+      <div class="picture" :key="word">{{ emoji }}</div>
+      <span class="speak-badge" aria-hidden="true">🔊</span>
+    </button>
+    <div class="hint">Tap 🔊 to hear it, then spell!</div>
 
     <div class="slots">
       <span
@@ -129,6 +138,27 @@ function scheduleAdvance() {
   align-items: center;
   gap: 14px;
   animation: pop-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+.picture-btn {
+  position: relative;
+  padding: 0;
+  background: none;
+  border: none;
+  line-height: 0;
+}
+.picture-btn:active {
+  transform: scale(0.96);
+}
+.speak-badge {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  font-size: clamp(22px, 6vw, 30px);
+  line-height: 1;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: 0 3px 10px rgba(91, 71, 145, 0.25);
 }
 .picture {
   font-size: clamp(80px, 28vw, 130px);

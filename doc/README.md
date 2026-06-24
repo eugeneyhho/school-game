@@ -40,7 +40,7 @@ src/
 │   ├── chinese.js       #   CHINESE_VOCAB / CHINESE_LEVELS / pickWords / buildChoices
 │   ├── confetti.js      #   burst() / celebrate()
 │   ├── sound.js         #   Web Audio SFX engine: playTap/playCorrect/…
-│   ├── speech.js        #   speak() — Chinese text-to-speech (speechSynthesis)
+│   ├── speech.js        #   speak(text, lang) — text-to-speech: Cantonese + English
 │   └── format.js        #   formatDuration(ms)
 └── components/          # presentational Vue SFCs (see components.md)
 ```

@@ -1,22 +1,25 @@
-// Text-to-speech for the Chinese game via the browser's built-in speechSynthesis.
-// Reads the Traditional-Chinese characters in Cantonese (廣東話). No audio files, no new
+// Text-to-speech via the browser's built-in speechSynthesis. No audio files, no new
 // dependencies — matches the no-asset philosophy of utils/sound.js.
 //
-// IMPORTANT limitation: speechSynthesis can only use voices INSTALLED ON THE DEVICE.
-// Many phones ship with a Mandarin (zh-CN) voice and NO Cantonese voice. When that
-// happens we fall back to the Mandarin voice — so the same characters come out in
-// Mandarin, not 廣東話. To get real Cantonese, install a Cantonese (zh-HK / yue) voice
-// on the device (iOS: Settings → Accessibility → Spoken Content → Voices → Chinese
-// (Hong Kong)). The only way to guarantee Cantonese on every device is to bundle audio
-// files instead — see doc/chinese-game.md.
+// Used by the Chinese game (Cantonese, 廣東話) and the English game (English). speak()
+// takes a BCP-47 lang tag and picks the best matching installed voice.
 //
-// speechSynthesis needs a user gesture, so speak() is only ever called from a tap
-// handler. Voices load asynchronously, so we cache one and refresh on `voiceschanged`.
-
-let voice = null
+// IMPORTANT limitation: speechSynthesis can only use voices INSTALLED ON THE DEVICE.
+// English voices are near-universal, so the English game works everywhere. Cantonese
+// (zh-HK / yue) voices are NOT preinstalled on many phones — when absent we fall back to
+// any zh voice (usually Mandarin), so the same characters come out in Mandarin. To get
+// real 廣東話, install a Cantonese voice (iOS: Settings → Accessibility → Spoken Content
+// → Voices → Chinese (Hong Kong)). The only way to GUARANTEE Cantonese on every device is
+// to bundle recorded audio per word — see doc/chinese-game.md.
+//
+// speechSynthesis needs a user gesture, so speak() is only ever called from a tap handler.
 
 function supportsSpeech() {
   return typeof window !== 'undefined' && 'speechSynthesis' in window
+}
+
+function getVoices() {
+  return supportsSpeech() ? window.speechSynthesis.getVoices() : []
 }
 
 /** A voice that reads Cantonese (zh-HK or the `yue` macrolanguage, or a known name). */
@@ -28,42 +31,40 @@ function isCantonese(v) {
   )
 }
 
-function pickVoice() {
-  if (!supportsSpeech()) return null
-  const voices = window.speechSynthesis.getVoices()
+/** Pick the best installed voice for a BCP-47 lang tag (e.g. 'zh-HK', 'en', 'en-US'). */
+function bestVoiceFor(lang) {
+  const voices = getVoices()
   if (!voices.length) return null
-  // Prefer a Cantonese voice; fall back to any zh voice (usually Mandarin) rather than
-  // silence — see the limitation note above.
-  return voices.find(isCantonese) || voices.find((v) => /^zh/i.test(v.lang)) || null
-}
-
-if (supportsSpeech()) {
-  voice = pickVoice()
-  window.speechSynthesis.addEventListener('voiceschanged', () => {
-    voice = pickVoice()
-  })
+  const norm = (s) => (s || '').toLowerCase()
+  const langNorm = norm(lang)
+  const base = langNorm.split('-')[0]
+  return (
+    voices.find((v) => norm(v.lang) === langNorm) || // exact match
+    voices.find((v) => norm(v.lang).startsWith(base)) || // same base language
+    (base === 'zh' ? voices.find(isCantonese) : null) || // Cantonese fallback for any zh*
+    null
+  )
 }
 
 /** True if the device has a Cantonese voice available (for UI hints / debugging). */
 export function hasCantoneseVoice() {
-  const v = pickVoice()
-  return !!v && isCantonese(v)
+  return getVoices().some(isCantonese)
 }
 
 /**
- * Speak `text` in Cantonese (廣東話) if a Cantonese voice is installed, else the device's
- * Chinese voice (usually Mandarin). Safe no-op if speech synthesis is unavailable.
+ * Speak `text` in the given language (default Cantonese zh-HK; pass 'en' for English).
+ * Picks the best matching installed voice; safe no-op if speech synthesis is unavailable.
  * Cancels any in-flight speech so rapid taps don't pile up.
  */
-export function speak(text) {
+export function speak(text, lang = 'zh-HK') {
   if (!supportsSpeech()) return
   const u = new SpeechSynthesisUtterance(text)
-  const v = voice || pickVoice()
+  const v = bestVoiceFor(lang)
   if (v) {
     u.voice = v // assign the specific voice explicitly (strongest signal to the engine)
     u.lang = v.lang
   } else {
-    u.lang = 'zh-HK'
+    u.lang = lang
   }
   u.volume = 1 // maximum — speechSynthesis caps volume at 1.0
   u.rate = 0.75 // slow, clear pacing for young learners

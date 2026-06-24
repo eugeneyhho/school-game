@@ -111,8 +111,8 @@ The emoji picture is a button: tapping it speaks the target word aloud in **Cant
   speech synthesis. `hasCantoneseVoice()` reports whether a Cantonese voice is available.
 - Voices load asynchronously; `speech.js` caches a voice and refreshes it on the
   `voiceschanged` event.
-- Pronunciation is scoped to the Chinese game (the other subjects stay text/SFX only).
-  Add it elsewhere by importing `speak` and calling it from a tap handler.
+- Pronunciation is shared with the English game (which calls `speak(word, 'en')`).
+  `speak` takes a BCP-47 lang tag and is reusable for any subject.
 
 > ⚠️ **Platform limitation.** `speechSynthesis` can only use voices **installed on the
 > device**. Many phones ship with a Mandarin (`zh-CN`) voice and *no* Cantonese voice — in

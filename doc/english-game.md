@@ -90,10 +90,19 @@ correct rounds turn all slots green.
 
 ## Picture transition
 
-`<div class="picture" :key="word">` — binding `:key` to the word forces Vue to
-recreate the node on each new word, retriggering the `pop` entrance animation
-without a `<Transition>`. Small trick worth reusing for per-item entrance
-animations.
+The picture is wrapped in a tappable `.picture-btn` whose inner `<div class="picture"
+:key="word">` holds the emoji. Binding `:key` to the word forces Vue to recreate the node
+on each new word, retriggering the `pop` entrance animation without a `<Transition>` — a
+small trick worth reusing for per-item entrance animations.
+
+## Pronunciation (tap to hear)
+
+The picture is a button: tapping it speaks the target word aloud in English via
+[`src/utils/speech.js`](../src/utils/speech.js) — `speak(word, 'en')` (the browser's
+`speechSynthesis`, no audio files). A 🔊 badge in the corner signals it's tappable, and the
+hint reads "Tap 🔊 to hear it, then spell!". English voices are near-universal, so this
+works on essentially every device. See the shared engine + its Cantonese caveat in
+[chinese-game.md](chinese-game.md).
 
 ## Results
 

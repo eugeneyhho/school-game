@@ -82,9 +82,11 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
 
 ### `EnglishGameScreen.vue`
 - **Emits:** `finished`, `back`.
-- **Role:** picture + slots + available tiles + backspace. Owns the
-  `onPlace`/`scheduleAdvance` timing (see [english-game.md](english-game.md)).
-  Uses `:key="word"` on the picture to retrigger its entrance animation.
+- **Role:** picture + slots + available tiles + backspace. The picture is a button:
+  tapping it calls `speak(word, 'en')` to pronounce the word (see
+  [english-game.md](english-game.md)). Owns the `onPlace`/`scheduleAdvance` timing (see
+  [english-game.md](english-game.md)). Uses `:key="word"` on the picture to retrigger its
+  entrance animation.
 
 ### `EnglishResultScreen.vue`
 - **Emits:** `play-again`, `change-settings` ("Change Level"), `back`.
