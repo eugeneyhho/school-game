@@ -2,7 +2,7 @@
 
 Reference documentation for the **Learning Games** app (Vue 3 + Vite), a
 tap-friendly learning game for kindergarteners with **Math**, **English**, and
-**Chinese** subjects.
+**Chinese** subjects, plus an upcoming **Dictation** game.
 
 These docs describe *how the code is built* — architecture, game logic,
 component contracts, the design system, and deployment — so a future change
@@ -42,7 +42,8 @@ src/
 │   ├── sound.js         #   Web Audio SFX engine: playTap/playCorrect/…
 │   ├── speech.js        #   speak(text, lang) — text-to-speech: Cantonese + English
 │   └── format.js        #   formatDuration(ms)
-└── components/          # presentational Vue SFCs (see components.md)
+└── components/          # presentational Vue SFCs, including the Dictation placeholder
+                         # (see components.md)
 ```
 
 ## Tech stack

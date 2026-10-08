@@ -32,6 +32,14 @@ const subjects = [
     color: '#51cf66',
     pending: false,
   },
+  {
+    key: 'dictation',
+    emoji: '🎧',
+    title: 'Dictation',
+    sub: 'Listen & Spell',
+    color: '#845ef7',
+    pending: true,
+  },
 ]
 
 function pick(key) {

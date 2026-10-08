@@ -4,9 +4,10 @@ import HomeScreen from './components/HomeScreen.vue'
 import MathApp from './components/MathApp.vue'
 import EnglishApp from './components/EnglishApp.vue'
 import ChineseApp from './components/ChineseApp.vue'
+import PendingScreen from './components/PendingScreen.vue'
 import { unlock } from './utils/sound'
 
-// Top-level subject switcher: null (home) | 'math' | 'english' | 'chinese'
+// Top-level subject switcher: null (home) | 'math' | 'english' | 'chinese' | 'dictation'
 const subject = ref(null)
 
 function selectSubject(key) {
@@ -38,4 +39,10 @@ onBeforeUnmount(() => {
   <MathApp v-else-if="subject === 'math'" @back="backToMenu" />
   <EnglishApp v-else-if="subject === 'english'" @back="backToMenu" />
   <ChineseApp v-else-if="subject === 'chinese'" @back="backToMenu" />
+  <PendingScreen
+    v-else-if="subject === 'dictation'"
+    title="Dictation"
+    emoji="🎧"
+    @back="backToMenu"
+  />
 </template>

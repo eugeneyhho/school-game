@@ -9,7 +9,7 @@ There is **no Vue Router**. Navigation is plain reactive state in two layers:
 
 ```
 App.vue                       (subject layer)
- └─ subject: null | 'math' | 'english' | 'chinese'
+ └─ subject: null | 'math' | 'english' | 'chinese' | 'dictation'
         │
         ├─ MathApp.vue / EnglishApp.vue     (screen layer)
         │     └─ screen: 'start' | 'game' | 'results'
@@ -18,9 +18,9 @@ App.vue                       (subject layer)
 ```
 
 1. **Subject layer** — `App.vue` holds a `subject` ref. `null` renders
-   `HomeScreen`; `'math'`/`'english'` render the matching `*App.vue`;
-   `'chinese'` renders a `PendingScreen`. Selection and "back" are just
-   `subject.value = key` / `null`.
+   `HomeScreen`; `'math'`, `'english'`, and `'chinese'` render the matching
+   `*App.vue`; `'dictation'` renders `PendingScreen`. Selection and "back" are
+   just `subject.value = key` / `null`.
 
 2. **Screen layer** — each `*App.vue` holds its own `screen` ref cycling
    `start → game → results` and renders the matching sub-component, threading
@@ -122,10 +122,8 @@ only for the lifetime of the game screen — leaving the screen stops it.
   (scoped) inside `GameScreen.vue`. The scoped copies win for that screen;
   `EnglishGameScreen.vue` relies on the global ones. If you restyle the
   topbar, update both to avoid drift.
-- **All three subjects are playable.** `App.vue` routes `'math'`, `'english'`, and
-  `'chinese'` to their `*App.vue`; `HomeScreen` lists all three with `pending: false`.
-  `PendingScreen.vue` is kept on disk as a generic "coming soon" placeholder for any
-  future subject but is no longer wired in. To add a fourth subject, follow the template
-  in [build-and-deploy.md](build-and-deploy.md) (the Chinese game is a recent example).
+- **All three existing subjects are playable.** `App.vue` routes `'math'`,
+  `'english'`, and `'chinese'` to their `*App.vue`. The fourth menu entry,
+  `'dictation'`, is marked pending and routes to `PendingScreen.vue`.
 - **No tests.** There is no test runner configured; `utils/` being pure is
   what would make adding one straightforward.

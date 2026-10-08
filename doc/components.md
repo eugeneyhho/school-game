@@ -7,21 +7,22 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
 ## Navigation shells
 
 ### `App.vue` (root, in `src/`)
-- **Role:** subject switcher. Holds `subject: ref(null|'math'|'english'|'chinese')`.
+- **Role:** subject switcher. Holds
+  `subject: ref(null|'math'|'english'|'chinese'|'dictation')`.
 - **Logic:** `selectSubject(key)` sets the ref; `backToMenu()` clears it.
-- **Renders:** `HomeScreen` (null), `MathApp`, `EnglishApp`, or `ChineseApp`.
+- **Renders:** `HomeScreen` (null), a playable subject app, or `PendingScreen`
+  for Dictation.
 
 ### `HomeScreen.vue`
 - **Emits:** `select(key)`.
-- **Owns:** the `subjects` list — `chinese`, `english`, `math` — each
-  with `emoji/title/sub/color/pending` (all `pending: false` now). Renders one big `.card`
-  per subject.
+- **Owns:** the `subjects` list — `chinese`, `english`, `math`, `dictation` —
+  each with `emoji/title/sub/color/pending`. Dictation is marked pending.
+  Renders one big `.card` per subject.
 
 ### `PendingScreen.vue`
 - **Props:** `title` (default `'Coming Soon'`), `emoji` (default `✨`).
 - **Emits:** `back`.
-- **Role:** generic "coming soon" placeholder. Kept on disk but **no longer wired in**
-  now that all three subjects are playable — available for a future fourth subject.
+- **Role:** generic "coming soon" placeholder, currently shown for Dictation.
 
 ### `MathApp.vue` / `EnglishApp.vue` / `ChineseApp.vue`
 - **Emits:** `back`.
