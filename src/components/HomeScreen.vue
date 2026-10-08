@@ -38,7 +38,7 @@ const subjects = [
     title: 'Dictation',
     sub: 'Listen & Spell',
     color: '#845ef7',
-    pending: true,
+    pending: false,
   },
 ]
 

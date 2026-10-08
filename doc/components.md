@@ -10,25 +10,25 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
 - **Role:** subject switcher. Holds
   `subject: ref(null|'math'|'english'|'chinese'|'dictation')`.
 - **Logic:** `selectSubject(key)` sets the ref; `backToMenu()` clears it.
-- **Renders:** `HomeScreen` (null), a playable subject app, or `PendingScreen`
-  for Dictation.
+- **Renders:** `HomeScreen` (null) or the matching playable subject app.
 
 ### `HomeScreen.vue`
 - **Emits:** `select(key)`.
 - **Owns:** the `subjects` list — `chinese`, `english`, `math`, `dictation` —
-  each with `emoji/title/sub/color/pending`. Dictation is marked pending.
-  Renders one big `.card` per subject.
+  each with `emoji/title/sub/color/pending`. All four are playable. Renders one
+  big `.card` per subject.
 
 ### `PendingScreen.vue`
 - **Props:** `title` (default `'Coming Soon'`), `emoji` (default `✨`).
 - **Emits:** `back`.
-- **Role:** generic "coming soon" placeholder, currently shown for Dictation.
+- **Role:** generic "coming soon" placeholder, currently not wired in.
 
-### `MathApp.vue` / `EnglishApp.vue` / `ChineseApp.vue`
+### `MathApp.vue` / `EnglishApp.vue` / `ChineseApp.vue` / `DictationApp.vue`
 - **Emits:** `back`.
 - **Role:** the `start → game → results` state machine for one subject. Holds
   a local `screen` ref, calls `game.start` / `englishGame.start` /
-  `chineseGame.start` on start, and flips `screen='results'` on `@finished`.
+  `chineseGame.start` / `dictationGame.start` on start, and flips
+  `screen='results'` on `@finished`.
   `playAgain` re-calls `start(config)` with the *existing* config (keeps settings).
 
 ## Math screens
@@ -115,6 +115,25 @@ Grouped by role. Props/emits use Vue `<script setup>` `defineProps` /
 ### `ChineseResultScreen.vue`
 - **Emits:** `play-again`, `change-settings` ("Change Level"), `back`.
 - **Role:** twin of `ResultScreen` with `"You got N out of 6!"` wording.
+
+## Dictation screens
+
+### `DictationStartScreen.vue`
+- **Props:** `config`.
+- **Emits:** `start({ level })`, `back`.
+- **Role:** selects Normal keyword-fill or Hard full-sentence input.
+
+### `DictationGameScreen.vue`
+- **Emits:** `finished`, `back`.
+- **Role:** plays the current sentence with `speak(sentence, 'en')`, renders
+  inline keyword fields or a full-sentence textarea, submits the response, and
+  shows the correct sentence after a miss. The learner explicitly advances
+  after reviewing feedback.
+
+### `DictationResultScreen.vue`
+- **Emits:** `play-again`, `change-level`, `back`.
+- **Role:** score, accuracy, elapsed time, streak, and shared rating display for
+  the six-sentence round.
 
 ## Shared
 

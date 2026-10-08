@@ -1,8 +1,8 @@
 // Text-to-speech via the browser's built-in speechSynthesis. No audio files, no new
 // dependencies — matches the no-asset philosophy of utils/sound.js.
 //
-// Used by the Chinese game (Cantonese, 廣東話) and the English game (English). speak()
-// takes a BCP-47 lang tag and picks the best matching installed voice.
+// Used by the Chinese game (Cantonese, 廣東話) and the English/Dictation games
+// (English). speak() takes a BCP-47 lang tag and picks the best matching installed voice.
 //
 // IMPORTANT limitation: speechSynthesis can only use voices INSTALLED ON THE DEVICE.
 // English voices are near-universal, so the English game works everywhere. Cantonese

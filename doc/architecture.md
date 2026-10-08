@@ -11,16 +11,16 @@ There is **no Vue Router**. Navigation is plain reactive state in two layers:
 App.vue                       (subject layer)
  └─ subject: null | 'math' | 'english' | 'chinese' | 'dictation'
         │
-        ├─ MathApp.vue / EnglishApp.vue     (screen layer)
+        ├─ MathApp.vue / EnglishApp.vue / ChineseApp.vue / DictationApp.vue
+        │                                      (screen layer)
         │     └─ screen: 'start' | 'game' | 'results'
         │
-        └─ HomeScreen / PendingScreen
+        └─ HomeScreen
 ```
 
 1. **Subject layer** — `App.vue` holds a `subject` ref. `null` renders
-   `HomeScreen`; `'math'`, `'english'`, and `'chinese'` render the matching
-   `*App.vue`; `'dictation'` renders `PendingScreen`. Selection and "back" are
-   just `subject.value = key` / `null`.
+   `HomeScreen`; every subject key renders the matching `*App.vue`. Selection
+   and "back" are just `subject.value = key` / `null`.
 
 2. **Screen layer** — each `*App.vue` holds its own `screen` ref cycling
    `start → game → results` and renders the matching sub-component, threading
@@ -31,9 +31,8 @@ the home menu** — there is no URL state to preserve.
 
 ## State ownership: the singleton-composable pattern
 
-The most important pattern in the codebase. `useGame.js` and
-`useEnglishGame.js` declare state **at module scope** and export a single
-shared object:
+The most important pattern in the codebase. Each game composable declares state
+**at module scope** and exports a single shared object:
 
 ```js
 // useGame.js (simplified)
@@ -63,11 +62,11 @@ Consequences of module-scoped state:
   returning to the settings screen.
 
 This is the lightweight alternative to Pinia: no provider, no injection, just
-ES-module singletons. Add a third subject by mirroring this structure.
+ES-module singletons. Add another subject by mirroring this structure.
 
 ## Round lifecycle (shared by all games)
 
-The three composables expose the same lifecycle shape, even though the inputs differ:
+The four composables expose the same lifecycle shape, even though the inputs differ:
 
 | Phase | `status` | What happens |
 | --- | --- | --- |
@@ -87,10 +86,11 @@ start(cfg) ──► status='playing', current=0
 
 Timing details:
 
-- **Feedback delay lives in the *component*, not the composable.**
+- **Feedback pacing lives in the *component*, not the composable.**
   `GameScreen.onAnswer` waits 1100 ms (correct) / 1500 ms (wrong) before
-  calling `advance()`; `EnglishGameScreen.scheduleAdvance` uses 1100 / 1700 ms.
-  This keeps the composable synchronous and lets the UI control pacing.
+  calling `advance()`; `EnglishGameScreen.scheduleAdvance` uses 1100 / 1700 ms;
+  Dictation waits for the learner to tap Next. This keeps the composable
+  synchronous and lets the UI control pacing.
 - **`elapsedMs` is captured once**, on the *last* question
   (`current === ROUND_LENGTH - 1`), as `performance.now() - startTime`. The
   live ticking timer shown during play comes from `useLiveTimer`, not from
@@ -122,8 +122,7 @@ only for the lifetime of the game screen — leaving the screen stops it.
   (scoped) inside `GameScreen.vue`. The scoped copies win for that screen;
   `EnglishGameScreen.vue` relies on the global ones. If you restyle the
   topbar, update both to avoid drift.
-- **All three existing subjects are playable.** `App.vue` routes `'math'`,
-  `'english'`, and `'chinese'` to their `*App.vue`. The fourth menu entry,
-  `'dictation'`, is marked pending and routes to `PendingScreen.vue`.
+- **All four subjects are playable.** `App.vue` routes `'math'`, `'english'`,
+  `'chinese'`, and `'dictation'` to their `*App.vue`.
 - **No tests.** There is no test runner configured; `utils/` being pure is
   what would make adding one straightforward.

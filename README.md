@@ -5,12 +5,14 @@ Pick a subject from the home menu and play!
 
 ## Subjects
 
-- 🐼 **中文 Chinese** — *coming soon* (pending).
+- 🐼 **中文 Chinese** — match each picture to the correct Traditional Chinese word.
 - 🔤 **English** — a picture-to-word spelling game: look at the picture (emoji) and
   tap the letter tiles to spell the word. Easy / Medium / Hard levels.
 - 🔢 **Math** — addition & subtraction with counting aids. Add / Take Away / Mixed,
   Easy (1–5) / Medium (1–10) / Hard (1–20), and **Pick** (multiple-choice) or
   **Type** (number keypad) answer modes.
+- 🎧 **Dictation** — listen to six revision sentences, then fill in key words
+  (Normal) or type the complete sentence (Hard).
 
 Every game has confetti + star rewards, streak tracking, and a fun results screen.
 All input is tap/click — friendly for tablets and pre-readers.
@@ -50,14 +52,16 @@ src/
 ├── style.css                     # global kid-friendly styles + shared chrome
 ├── composables/
 │   ├── useGame.js                # math game state + round logic (singleton)
-│   └── useEnglishGame.js         # english spelling state + round logic (singleton)
+│   ├── useEnglishGame.js         # english spelling state + round logic (singleton)
+│   ├── useChineseGame.js         # chinese word game state + round logic
+│   └── useDictationGame.js       # dictation revision state + grading
 ├── utils/
 │   ├── math.js                   # math problem generation + distractors
 │   ├── vocab.js                  # english word list + tile builder
+│   ├── dictation.js              # six sentences + answer normalization
 │   └── confetti.js               # celebration helpers (canvas-confetti)
 └── components/
-    ├── HomeScreen.vue            # subject menu (Chinese / English / Math)
-    ├── PendingScreen.vue         # "coming soon" screen (Chinese)
+    ├── HomeScreen.vue            # four-subject menu
     ├── MathApp.vue               # math flow: start → game → results
     ├── EnglishApp.vue            # english flow: start → game → results
     ├── StartScreen.vue           # math settings
@@ -69,5 +73,9 @@ src/
     ├── EnglishStartScreen.vue    # english level pick
     ├── EnglishGameScreen.vue     # picture + letter-tile spelling
     ├── EnglishResultScreen.vue   # english results
+    ├── DictationApp.vue          # dictation flow: start → game → results
+    ├── DictationStartScreen.vue  # Normal / Hard level pick
+    ├── DictationGameScreen.vue   # listening + sentence input
+    ├── DictationResultScreen.vue # dictation results
     └── AppMascot.vue             # the reactive 🦊 mascot
 ```

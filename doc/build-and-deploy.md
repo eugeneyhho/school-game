@@ -49,9 +49,8 @@ Published URL (default config): **https://eugeneyhho.github.io/school-game/**
 
 ## Adding a subject
 
-All three subjects (Math, English, Chinese) follow the same template, so a fourth is
-straightforward. The Chinese game (added most recently) is the freshest worked example —
-see [chinese-game.md](chinese-game.md).
+All four subjects follow the same template, so another is straightforward.
+Dictation is the freshest example; see [dictation-game.md](dictation-game.md).
 
 1. **Util** — `src/utils/<subject>.js` (pure data/generation, no Vue): a vocab/problem set
    and `pickWords`/`buildChoices`-style helpers.
