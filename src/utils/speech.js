@@ -18,8 +18,20 @@ function supportsSpeech() {
   return typeof window !== 'undefined' && 'speechSynthesis' in window
 }
 
+let cachedVoices = []
+
+function refreshVoices() {
+  cachedVoices = supportsSpeech() ? window.speechSynthesis.getVoices() : []
+}
+
+if (supportsSpeech()) {
+  refreshVoices()
+  window.speechSynthesis.addEventListener('voiceschanged', refreshVoices)
+}
+
 function getVoices() {
-  return supportsSpeech() ? window.speechSynthesis.getVoices() : []
+  if (!cachedVoices.length) refreshVoices()
+  return cachedVoices
 }
 
 /** A voice that reads Cantonese (zh-HK or the `yue` macrolanguage, or a known name). */
@@ -39,7 +51,7 @@ function isLikelyFemaleVoice(voice) {
 }
 
 /** Pick the best installed voice for a BCP-47 lang tag (e.g. 'zh-HK', 'en', 'en-US'). */
-function bestVoiceFor(lang, preferFemale = false) {
+function bestVoiceFor(lang, preferFemale = false, preferredVoiceNames = []) {
   const voices = getVoices()
   if (!voices.length) return null
   const norm = (s) => (s || '').toLowerCase()
@@ -47,6 +59,14 @@ function bestVoiceFor(lang, preferFemale = false) {
   const base = langNorm.split('-')[0]
   const exactVoices = voices.filter((voice) => norm(voice.lang) === langNorm)
   const baseVoices = voices.filter((voice) => norm(voice.lang).startsWith(base))
+  const matchingVoices = exactVoices.length ? exactVoices : baseVoices
+
+  for (const preferredName of preferredVoiceNames) {
+    const preferredVoice = matchingVoices.find((voice) =>
+      norm(voice.name).includes(norm(preferredName)),
+    )
+    if (preferredVoice) return preferredVoice
+  }
 
   if (preferFemale) {
     const femaleVoice =
@@ -72,10 +92,14 @@ export function hasCantoneseVoice() {
  * Picks the best matching installed voice; safe no-op if speech synthesis is unavailable.
  * Cancels any in-flight speech so rapid taps don't pile up.
  */
-export function speak(text, lang = 'zh-HK', { rate = 0.75, preferFemale = false } = {}) {
+export function speak(
+  text,
+  lang = 'zh-HK',
+  { rate = 0.75, preferFemale = false, preferredVoiceNames = [] } = {},
+) {
   if (!supportsSpeech()) return
   const u = new SpeechSynthesisUtterance(text)
-  const v = bestVoiceFor(lang, preferFemale)
+  const v = bestVoiceFor(lang, preferFemale, preferredVoiceNames)
   if (v) {
     u.voice = v // assign the specific voice explicitly (strongest signal to the engine)
     u.lang = v.lang
