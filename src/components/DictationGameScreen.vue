@@ -52,7 +52,7 @@ watch(
 )
 
 function hearSentence() {
-  speak(game.sentence.value.text, 'en')
+  speak(game.sentence.value.text, 'en', { rate: 0.6, preferFemale: true })
 }
 
 function submitAnswer() {

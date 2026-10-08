@@ -16,8 +16,10 @@ Files:
 | Normal | The sentence is shown with colour, number, and object words blanked. |
 | Hard | Only audio is provided; the learner types the complete sentence. |
 
-Both levels call `speak(sentence, 'en')` through the browser's built-in speech
-synthesis. Playback can be repeated without a limit.
+Both levels call `speak(sentence, 'en', { rate: 0.6, preferFemale: true })`
+through the browser's built-in speech synthesis. Playback can be repeated
+without a limit. The app prefers a known female voice installed on the device,
+then falls back to the device's first available English voice.
 
 ## Sentence set
 

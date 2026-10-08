@@ -31,16 +31,32 @@ function isCantonese(v) {
   )
 }
 
+const FEMALE_VOICE_NAMES =
+  /female|woman|samantha|karen|moira|tessa|fiona|victoria|susan|zira|aria|jenny|sonia|ava|allison|serena|kate|kathy/i
+
+function isLikelyFemaleVoice(voice) {
+  return FEMALE_VOICE_NAMES.test(voice.name || '')
+}
+
 /** Pick the best installed voice for a BCP-47 lang tag (e.g. 'zh-HK', 'en', 'en-US'). */
-function bestVoiceFor(lang) {
+function bestVoiceFor(lang, preferFemale = false) {
   const voices = getVoices()
   if (!voices.length) return null
   const norm = (s) => (s || '').toLowerCase()
   const langNorm = norm(lang)
   const base = langNorm.split('-')[0]
+  const exactVoices = voices.filter((voice) => norm(voice.lang) === langNorm)
+  const baseVoices = voices.filter((voice) => norm(voice.lang).startsWith(base))
+
+  if (preferFemale) {
+    const femaleVoice =
+      exactVoices.find(isLikelyFemaleVoice) || baseVoices.find(isLikelyFemaleVoice)
+    if (femaleVoice) return femaleVoice
+  }
+
   return (
-    voices.find((v) => norm(v.lang) === langNorm) || // exact match
-    voices.find((v) => norm(v.lang).startsWith(base)) || // same base language
+    exactVoices[0] || // exact match
+    baseVoices[0] || // same base language
     (base === 'zh' ? voices.find(isCantonese) : null) || // Cantonese fallback for any zh*
     null
   )
@@ -56,10 +72,10 @@ export function hasCantoneseVoice() {
  * Picks the best matching installed voice; safe no-op if speech synthesis is unavailable.
  * Cancels any in-flight speech so rapid taps don't pile up.
  */
-export function speak(text, lang = 'zh-HK') {
+export function speak(text, lang = 'zh-HK', { rate = 0.75, preferFemale = false } = {}) {
   if (!supportsSpeech()) return
   const u = new SpeechSynthesisUtterance(text)
-  const v = bestVoiceFor(lang)
+  const v = bestVoiceFor(lang, preferFemale)
   if (v) {
     u.voice = v // assign the specific voice explicitly (strongest signal to the engine)
     u.lang = v.lang
@@ -67,7 +83,7 @@ export function speak(text, lang = 'zh-HK') {
     u.lang = lang
   }
   u.volume = 1 // maximum — speechSynthesis caps volume at 1.0
-  u.rate = 0.75 // slow, clear pacing for young learners
+  u.rate = Math.min(2, Math.max(0.1, rate))
   window.speechSynthesis.cancel()
   window.speechSynthesis.speak(u)
 }
